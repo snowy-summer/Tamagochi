@@ -12,6 +12,7 @@ final class PickUpViewController: UIViewController {
     
     private lazy var pickUpCollecionView = UICollectionView(frame: .zero,
                                                             collectionViewLayout: createLayout())
+    private var list = SampleDamagochis().list
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +26,7 @@ final class PickUpViewController: UIViewController {
 
 extension PickUpViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 12
+        return list.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -35,9 +36,21 @@ extension PickUpViewController: UICollectionViewDelegate, UICollectionViewDataSo
             return PickUpCollectionViewCell()
         }
         
+        let data = list[indexPath.row]
+        
+        cell.updateContent(data: data)
+        
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
+        let vc = StartPopupViewController(model: list[indexPath.row])
+        
+        let navigation = UINavigationController(rootViewController: vc)
+        navigation.modalPresentationStyle = .overFullScreen
+        present(navigation, animated: true)
+    }
 }
 
 //MARK: - configuration
@@ -69,10 +82,14 @@ extension PickUpViewController {
     }
     
     private func createLayout() -> UICollectionViewFlowLayout {
-        var layout = UICollectionViewFlowLayout()
-        layout.itemSize =  CGSize(width: view.frame.width * 0.28,
-                                  height: view.frame.width * 0.28)
+        let layout = UICollectionViewFlowLayout()
+        let width = (view.frame.width - 64) / 3
         
+        layout.itemSize =  CGSize(width: width,
+                                  height: width * 1.25)
+        
+        layout.minimumLineSpacing = 16
+        layout.minimumInteritemSpacing = 16
         return layout
     }
 }
