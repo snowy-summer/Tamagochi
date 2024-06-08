@@ -1,5 +1,5 @@
 //
-//  StartPopupViewController.swift
+//  PopupViewController.swift
 //  Damagochi
 //
 //  Created by 최승범 on 6/7/24.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class StartPopupViewController: UIViewController {
+final class PopupViewController: UIViewController {
     
     private let popupView = UIView()
     private let damagochiView = DamagochiView()
@@ -49,6 +49,8 @@ final class StartPopupViewController: UIViewController {
     
     @objc private func startButtonClicked() {
         
+        UserData.saveDamagochi(value: damagochi)
+        
         let vc = MainViewController(damagochi: damagochi)
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -58,7 +60,7 @@ final class StartPopupViewController: UIViewController {
 
 //MARK: - configuration
 
-extension StartPopupViewController {
+extension PopupViewController {
     
     private func configureHierachy() {
     
@@ -117,11 +119,11 @@ extension StartPopupViewController {
             make.top.equalTo(popupView.snp.top).inset(32)
             make.centerX.equalToSuperview()
             make.width.equalTo(popupView.snp.width).multipliedBy(0.5)
-            make.height.equalTo(damagochiView.snp.width).multipliedBy(1.25)
+            make.height.equalTo(damagochiView.snp.width).multipliedBy(1.2)
         }
         
         lineView.snp.makeConstraints { make in
-            make.top.equalTo(damagochiView.snp.bottom).offset(8)
+            make.top.equalTo(damagochiView.snp.bottom).offset(16)
             make.horizontalEdges.equalToSuperview().inset(32)
             make.height.equalTo(1)
         }
@@ -129,17 +131,16 @@ extension StartPopupViewController {
         descriptionLabel.snp.makeConstraints { make in
             make.top.equalTo(lineView.snp.bottom).offset(8)
             make.horizontalEdges.equalToSuperview().inset(32)
+            
         }
         
         cancelButton.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom)
             make.bottom.leading.equalToSuperview()
             make.height.equalTo(44)
             make.width.equalToSuperview().dividedBy(2)
         }
         
         startButton.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom)
             make.bottom.trailing.equalToSuperview()
             make.height.equalTo(44)
             make.width.equalToSuperview().dividedBy(2)

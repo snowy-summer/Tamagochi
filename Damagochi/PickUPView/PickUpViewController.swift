@@ -45,7 +45,7 @@ extension PickUpViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        let vc = StartPopupViewController(model: list[indexPath.row])
+        let vc = PopupViewController(model: list[indexPath.row])
         
         let navigation = UINavigationController(rootViewController: vc)
         navigation.modalPresentationStyle = .overFullScreen

@@ -30,7 +30,7 @@ struct SampleDamagochis {
     ]
 }
 
-struct DamagochiModel {
+struct DamagochiModel: Codable {
     var type: DamagochiType
     var name: String = ""
     var level: Int {
@@ -50,11 +50,11 @@ struct DamagochiModel {
     
 }
 
-enum DamagochiType {
-    case plant
-    case sun
-    case star
-    case none
+enum DamagochiType: Int, Codable {
+    case plant = 1
+    case sun = 2
+    case star = 3
+    case none = 0
     
     var defaultName: String {
         switch self {
@@ -66,19 +66,6 @@ enum DamagochiType {
             return "반짝반짝 다마고치"
         case .none:
             return "준비중입니다"
-        }
-    }
-    
-    var image: UIImage {
-        switch self {
-        case .plant:
-            return UIImage(resource:  ._1_8)
-        case .sun:
-            return UIImage(resource: ._2_8)
-        case .star:
-            return UIImage(resource: ._3_8)
-        case .none:
-            return UIImage(resource: .no)
         }
     }
 }

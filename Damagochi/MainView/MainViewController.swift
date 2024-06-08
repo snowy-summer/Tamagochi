@@ -17,7 +17,13 @@ final class MainViewController: UIViewController {
     private let mealFeedView = FeedView(feedType: .meal)
     private let waterFeedView = FeedView(feedType: .water)
     
-    private var damagochi: DamagochiModel
+    private var damagochi: DamagochiModel {
+        didSet {
+            levelLabel.text = "LV\(damagochi.level) . 밥알 \(damagochi.meal)개 . 물방울 \(damagochi.water)개"
+            damagochiView.updateContent(data: damagochi)
+            UserData.saveDamagochi(value: damagochi)
+        }
+    }
     
     init(damagochi: DamagochiModel) {
         self.damagochi = damagochi
@@ -35,12 +41,31 @@ final class MainViewController: UIViewController {
         configureUI()
         configureLayout()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        configureNavigationBar()
+    }
 
     @objc private func pushSettingVC() {
         let vc = SettingViewController()
         navigationController?.pushViewController(vc,
                                                  animated: true)
     }
+}
+
+//MARK: - FeedViewDelegate
+extension MainViewController: FeedViewDelegate {
+    
+    func feedingWater(value: Int) {
+        damagochi.water += value
+    }
+    
+    func feedingMeal(value: Int) {
+        damagochi.meal += value
+    }
+    
 }
 
 //MARK: - configuration
@@ -69,11 +94,16 @@ extension MainViewController {
         bubbleImageView.image = UIImage(resource: .bubble)
         bubbleImageView.contentMode = .scaleAspectFill
         bubbleLabel.numberOfLines = .zero
-        bubbleLabel.text = " \(navigationItem.title!)님 오늘 깃허브 푸시 하셨어영?"
+        
+        guard let name = UserData.name else { return }
+        
+        bubbleLabel.text = "\(name)님 오늘 깃허브 푸시 하셨어영?"
         
         levelLabel.text = "LV\(damagochi.level) . 밥알 \(damagochi.meal)개 . 물방울 \(damagochi.water)개"
         
        
+        mealFeedView.feedDelegate = self
+        waterFeedView.feedDelegate = self
     }
     
     private func configureLayout() {
@@ -81,6 +111,7 @@ extension MainViewController {
         damagochiView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(view.snp.width).multipliedBy(0.5)
+            make.height.equalTo(damagochiView.snp.width).multipliedBy(1.2)
         }
         
         bubbleImageView.snp.makeConstraints { make in
@@ -117,13 +148,16 @@ extension MainViewController {
     }
 
     private func configureNavigationBar() {
+        guard let name = UserData.name else { return }
+        self.navigationController?.navigationBar.tintColor = .fontAndBorderColor
+        
         let settingItem = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle"),
                                           style: .plain,
                                           target: self,
                                           action: #selector(pushSettingVC))
-        settingItem.tintColor = .fontAndBorderColor
         
-        navigationItem.title = "대장님의 다마고치"
+        
+        navigationItem.title = "\(name)님의 다마고치"
         navigationItem.leftBarButtonItem = .none
         navigationItem.rightBarButtonItem = settingItem
     }

@@ -31,7 +31,22 @@ final class DamagochiView: UIView {
 extension DamagochiView {
     
     func updateContent(data: DamagochiModel) {
-        damagochiImageView.image = data.type.image
+        
+        
+        if data.type != .none {
+            if data.level == 10 {
+                damagochiImageView.image = UIImage(named: "\(data.type.rawValue)-\(9)")
+            } else {
+                damagochiImageView.image = UIImage(named: "\(data.type.rawValue)-\(data.level)")
+            }
+        } else {
+            damagochiImageView.image = UIImage(resource: .no)
+        }
+        
+        
+        
+        
+        
         
         if data.name.isEmpty {
             damagochiNameLabel.text = data.type.defaultName
@@ -66,10 +81,9 @@ extension DamagochiView {
     private func configureLayout() {
         
         damagochiImageView.snp.makeConstraints { make in
-            
-            make.top.equalToSuperview().inset(8)
+            make.top.equalToSuperview()
             make.centerX.equalToSuperview()
-            make.width.equalToSuperview().inset(8)
+            make.width.equalToSuperview()
             make.height.equalTo(damagochiImageView.snp.width)
            
         }
@@ -77,7 +91,7 @@ extension DamagochiView {
         damagochiNameView.snp.makeConstraints { make in
             make.top.equalTo(damagochiImageView.snp.bottom).offset(8)
             make.centerX.equalTo(damagochiImageView.snp.centerX)
-            make.bottom.equalTo(self.snp.bottom).inset(8)
+            make.bottom.equalTo(self.snp.bottom)
         }
         
         damagochiNameLabel.snp.makeConstraints { make in
